@@ -2,6 +2,7 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -40,7 +41,6 @@ public class UserDaoHibernateImpl implements UserDao {
             session.beginTransaction();
 
             String SQL = "DROP TABLE IF EXISTS user ";
-
             session.createSQLQuery(SQL).executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -49,14 +49,17 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
+        User addUser = new User(name, lastName, age);
 
         try {
             Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
 
-            session.save(new User(name, lastName, age));
+            //session.save(new User(name, lastName, age));
+            session.save(addUser);
             session.getTransaction().commit();
-            System.out.println("User с именем – " + name + " добавлен в базу данных");
+            //System.out.println("User с именем – " + name + " добавлен в базу данных");
+            System.out.println(addUser);
         } catch (Exception e) {
 
         }
@@ -100,10 +103,11 @@ public class UserDaoHibernateImpl implements UserDao {
             Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
 
-            List<User> users = session.createQuery("From User").list();
-            for (User user : users) {
-                session.delete(user);
-            }
+//            List<User> users = session.createQuery("From User").list();
+//            for (User user : users) {
+//                session.delete(user);
+//            }
+            session.createQuery("delete User").executeUpdate();
 
             session.getTransaction().commit();
         } catch (Exception e) {
